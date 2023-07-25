@@ -26,7 +26,7 @@ http-api-web-dashboard = false
 WARP = wireguard, section-name=Cloudflare, test-url=http://cp.cloudflare.com/generate_204
 WARP1 = wireguard, section-name=Cloudflare, test-url=http://cp.cloudflare.com/generate_204
 Warp_ = wireguard, section-name=CloudLooling, test-url=http://cp.cloudflare.com/generate_204
-Warp1_ = wireguard, section-name=CloudLooling, test-url=http://cp.cloudflare.com/generate_204
+Warp_1 = wireguard, section-name=CloudLooling, test-url=http://cp.cloudflare.com/generate_204
 Warp+GSC = wireguard, section-name=GetSomeCats, test-url=http://cp.cloudflare.com/generate_204
 Warp+GSC1 = wireguard, section-name=GetSomeCats, test-url=http://cp.cloudflare.com/generate_204
 [Proxy Group]
