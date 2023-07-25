@@ -1,0 +1,93 @@
+[General]
+# > 跳过代理
+skip-proxy = 192.168.0.0/24, 10.0.0.0/8, 172.16.0.0/12, 127.0.0.1, localhost, *.local, seed-sequoia.siri.apple.com, sequoia.apple.com
+# > 排除简单主机名
+exclude-simple-hostnames = true
+# > 测试超时（秒）
+test-timeout = 2
+# > Internet 测试 URL
+internet-test-url = http://www.baidu.com
+# > 代理测速 URL
+proxy-test-url = http://www.google.com/generate_204
+# > GeoIP数据库
+geoip-maxmind-url = https://github.com/Hackl0us/GeoIP2-CN/raw/release/Country.mmdb
+# > DNS 服务器
+dns-server = 223.5.5.5, 114.114.114.114
+# > 增强版 Wi-Fi 助理
+wifi-assist = true
+# > IPv6 支持（默认关闭）
+ipv6 = false
+# > 日志级别
+loglevel = notify
+# > 远程控制器
+http-api-web-dashboard = false
+
+[Proxy]
+WARP = wireguard, section-name=Cloudflare, test-url=http://cp.cloudflare.com/generate_204
+Warp+GSC = wireguard, section-name=GetSomeCats, test-url=http://cp.cloudflare.com/generate_204
+Warp_ = wireguard, section-name=CloudLooling, test-url=http://cp.cloudflare.com/generate_204
+[Proxy Group]
+# > 策略组（下面的节点信息需与外部节点对应，若删除了外部节点里的节点，那么在策略组里也要删除。）
+Proxy = select, WARP,Warp_,Warp+GSC,香港节点, 美国节点, 新加坡节点, 日本节点, 台湾节点, 手动选择
+GlobalMedia = select, 香港节点, 美国节点, 新加坡节点, 日本节点, 台湾节点
+# > 外部节点
+香港节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇭🇰)|(港)|(Hong)|(HK)
+台湾节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇨🇳)|(台)|(Tai)|(TW)
+美国节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇺🇸)|(美)|(States)|(US)
+日本节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇯🇵)|(日)|(Japan)|(JP)
+新加坡节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇸🇬)|(新)|(Singapore)|(SG)
+手动选择 = select, policy-path=订阅地址, update-interval=0, no-alert=0, hidden=0, include-all-proxies=0
+
+[Rule]
+# > 苹果服务
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list,DIRECT
+DOMAIN-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple_Domain.list,DIRECT
+# > 社交平台
+RULE-SET,https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/main/ruleset/ASN.Telegram.list,Proxy
+# > 流媒体
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GlobalMedia/GlobalMedia.list,GlobalMedia
+DOMAIN-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GlobalMedia/GlobalMedia_Domain.list,GlobalMedia
+# > Proxy
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Proxy/Proxy.list,Proxy
+DOMAIN-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Proxy/Proxy_Domain.list,Proxy
+# > China
+RULE-SET,https://github.com/Blankwonder/surge-list/raw/master/cn.list,DIRECT
+# 防止应用循环请求
+IP-CIDR,0.0.0.0/32,REJECT,no-resolve
+# > 局域网地址
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Lan/Lan.list,DIRECT
+# > China ASN
+RULE-SET,https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/auto-update/ruleset/ASN.China.list,DIRECT
+# > DNS 查询失败走Final规则
+FINAL,Proxy,dns-failed
+
+[MITM]
+tcp-connection = true
+h2 = true
+ca-passphrase = 694B4862
+ca-p12 = MIIKPAIBAzCCCgYGCSqGSIb3DQEHAaCCCfcEggnzMIIJ7zCCBF8GCSqGSIb3DQEHBqCCBFAwggRMAgEAMIIERQYJKoZIhvcNAQcBMBwGCiqGSIb3DQEMAQYwDgQINb1pBJJe1fACAggAgIIEGGBeQHJ7brwnQxUWEOzo9be8HwCQB0263Z5M9kvxhaKZ4qNEB6wkWzj/DMhdYv86cFUciwoaGEMn0ZTeOpXiisCD1qLShCAdJga9LrmhMHA8WckieoRxehDi84f7zuj0gxusmL5iSdYAixPT0FK7nznKdsINrc6fUI5snI0u/endR4UQ+6DqslLd+g7ciQg7bOOqC1LapRYh3n+V+eeRy+MOjXPIJS3w2UudUEv7sWURtGCbtM4CO4od9vpZ8fhnTjd09Q9mWwNq/iO+7QKAY9sKSDNRQ1YY5XSPbyM7vRPTb4uU8Bg+LXm76wzGqO3CkAO59yY8XIUAdjnWgvAGIhkUHnLA7no/MYv98MaL+6Fi1ztRkMwT3xMhvGCTZ1Yso4/gVpcB8ZaHkjXqAu1m/sy7os99kdHfZxgzE1Uv7xUmypDO1mEQvFLneDbSpphWawMBf/eTvfwI/esCcs0H51OhRMPhql2GA4VQjVfOprCgTBVSO3TIzH0/9HIjUqSTW5NfQ9luJGNWqyCUtWHq3X8tzW+i7WTp75jayDgGm7tIWKQxO6fKgzElxA3IGnMJn7RB23X5TN9vQdNv+6Gts7EzClDm3hk7Ne63+hKgPSZYgPEFoQt8GqKh3AYIWeNbRyuQq7PqZnkePi/Zqwf0OMOv50Yzy4lcxfKvm1BWe2VxNiRbzapSZvQ3CNgWQ6aznewLdMYnOOW037VMQYyITf2Za+F8hBzOdJApZqF6+kaz5/ypsEUcBIOXFZ6YxgCL86I+Ox3efqHstvYEwtHcTJZCi5mUuk5ZpdOrBonjIobnmhbL1r6qWCC9K6Afw6tPFnZoajR9vKLppjD+aorfhCvZUYhxEY08hrjysf92hW2803raiSDt/4voEKINETm3s9FbKMzwXINYClwmsjOdvA9Chb8Snl6F373pN/6QVSXRb/FEW1Gahswec/dKYy3nBPFhpbby3h9CYiXDKR2k8vR51ah6Zok30lNUQ4mjO8w1zg3VaafK1xaKiR6ExQStMvyLB8brjN+yMgEpeds19oh1hfS6uRaIAP4xtO0vG6exKIJZxMehTbJhPbgxUgbOAmg0qrzX/12za/6mDYoQJf1jllVuAoidaPfM9cnyWW8RgDn63QhogWjmjdqR7nym+N/nPSofU+mtmFJN+lOvGLCzyvQCBZnzfAFps30/spX+c1cAEtRTNoX16x4oFYgPAmdaeauQl5pfzUd9srhDPp4EkS4njcmfGNJWU6fXAWDuT/lm5ADKx8IbgDYJQytDp6cMcy3sDo/zjUO4Yl0gCXNcMea+JgCoFfPtfn4Pw0InO9KZOHbUgHBA+RuivflvO+9LwUD8ImdOxU6HO4bfWqMSC4dpk0vs9v+xn+IkpGp2C7fADbeT0tIwggWIBgkqhkiG9w0BBwGgggV5BIIFdTCCBXEwggVtBgsqhkiG9w0BDAoBAqCCBO4wggTqMBwGCiqGSIb3DQEMAQMwDgQIxHpKZcFh2doCAggABIIEyJ1JlPkGe3mPr8DHjwrl1SF7MxH6Dv/gEgI4v/PMQj0plzwInBBrjbVgydvu3y0NrPBKDU4giyslX5L8BPdNIVbiomLc08xVCzGzTMr2aavCuGptd/6pzwRzzmunNOW+vvRfx0S8rj6A/qI5a3axohbc5KOPljSPqw17CEwPJk3QzHdBhab5yqdB/ej4xWh99MtRWJPR38AAFWeYmKwBpqO5wG8xc4LONbG0dtBXKzjXYnP7y/GeQgLDdRpPNIc6rOQlBcjtPw/+XSKDg+CqvWZOardC7CFt/2lxuH771DRgiqkc4Lvg1FqO5vGIr6NIfHAw0cD8xyIarpQETsCdaTiaeTxvX5hiWyU8JB+FdTq0gs4SMbHLBnx4AX+fkuJ2dwGWYLVILJq/URRof9OgYux7HsbYcdhvAH7UaPWTqv5Hkj9NOsGPx8LCeGkkVnbrrn/uxWvPkYx/JtoGSCYDZkiTrU9/4oJB0LJVnC3WLsybL8LgR4WwuQmfoFToZqDiKkXCJviGFtE3Ih0xheTxFvFEwllm8ApJyQZju01f15oeGzSARbJxiOOVBaw0ynG2+2BXkRLGShX7TI3SCjXR4fDSTTmIXJalP3V037HcO0bST1skDNxKZAri47p7QGiTsgqvfY7EOqdu6PC3XBkZJWCPaH2wfbgDzvA0a9zf64tyy/jHK5isiqz1PxbRf+eRcSs/q6gMa6PutUCLySbqmM1tCbvGaO5l7lJwMFE0wf/pL4qJtIAW5Bx3cek9WFhaqIfGkvVyR6lkA/vR2aYtyQK0UZxEkQR0jYzX1fDcw+HwZMEPRUzBiWChSClPmsr/P511sP5+u+BM76Vxs5srKyHIAh9C3ho8Nikb8xOUGjJEHRhzJ6v8HaYdkUw9MpEfWyLK29IBsPenyfoM0MQYcpx63ygTSc7UF1v25qfyfeU48LvbmW0+XUm1sgiaF5Omq00/Hut5aY3gDIVSVyOyh9bKTmlehF7z3/olCcgguytphK/i/fZIZcR6tZYpyypw8P6dfAlOEX1cE5NQvKNVk+5g/3hflXlNTaQbu9gP1NZlgPTX/dm96w0IyJ8ygcDigz8ZzsJ6CpLaxv4QKItasGRnoVkZCMccZUSSrdj04dXFNUOKqjRQvmoUNVL/3efyLKDMEy4PYQIInuRicXpqzuAZKqs8YbDUrMvQUvIzz+AIe6rJDezYe1+vRViMJRv1RZddKxLDDln/BTmP4bnsjeXE4afKzCVTawHN67Hmj5UCqLw1J6WyKXNXvtDrBW+XffU1dgYsmHl0UhwtR21OTj2Qde0HkK5OcudL5QSlFcFFFfC/7o2DU09D6pfpBS7rszAsPwjv5L7wZfEYfmuydiOzE0OYTxPMHIrqnVtJqxammElPjPx1rKRGYAsddBBBJaGfrIKjBiciAJR3OufLZv82q9n9feqna88IejRjWZPPSaGjkedgnWBU+gP2NTHDiSjpp48+Y9kuGKScD/8MwIoCs18jPIVT9MFV3VqcnPCHQtfMXXlfYdWQ75A7ZzWjnC+3yOzBLzv1iEMuiwMA+PXoQrQKRPAI8ByIpqcOm5sMdoIAvUHZCWhVGbazZRLDykqlulT/Vy28FGmZAR+5a1Fj+qXarqdPVjFsMCMGCSqGSIb3DQEJFTEWBBSSdd3ylQuLNjYNDfSDifEBFO3jRDBFBgkqhkiG9w0BCRQxOB42AFMAdQByAGcAZQAgAEcAZQBuAGUAcgBhAHQAZQBkACAAQwBBACAANgA5ADQAQgA0ADgANgAyMC0wITAJBgUrDgMCGgUABBRNftI8cyJJPqYQMmNySPJ1Z8dyaAQI/oXpRZZMlhk=
+
+[WireGuard GetSomeCats]
+private-key = oFl4IF42oioy2rU9Dc2af5vi6X6+zbFDnY/CUckU23g=
+self-ip = 172.16.0.2
+self-ip-v6 = 2606:4700:110:8f71:49f:13f4:55d6:a577
+prefer-ipv6 = true
+dns-server = 162.159.36.1, 2606:4700:4700::1111
+mtu = 1380
+peer = (public-key = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=, allowed-ips = "0.0.0.0/0, ::0/0", endpoint = 162.159.195.9:2408, keepalive = 45)
+
+[WireGuard CloudLooling]
+private-key = 2HUO7K++8JBzDWphUoZM+nFYAlxyACAk1NbDXfxzeHE=
+self-ip = 172.16.0.2
+self-ip-v6 = 2606:4700:110:8c7c:b008:4b8a:d12f:30bc
+dns-server = 162.159.36.1, 2606:4700:4700::1111
+mtu = 1280
+peer = (public-key = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=, allowed-ips = "0.0.0.0/0, ::/0", endpoint = 162.159.192.41:894, keepalive = 45, client-id = 129/141/53)
+
+[WireGuard Cloudflare]
+private-key = iIgyHQdsrhAtcwZ843UaRNmBKChH53nS24cg/vrG31I=
+self-ip = 172.16.0.2
+self-ip-v6 = 2606:4700:110:8c39:566f:b7a0:513:578
+dns-server = 162.159.36.1, 2606:4700:4700::1111
+mtu = 1280
+peer = (public-key = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=, allowed-ips = "0.0.0.0/0, ::/0", endpoint = 162.159.195.9:2408, keepalive = 45, client-id = 158/6/189)
