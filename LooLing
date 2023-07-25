@@ -34,12 +34,13 @@ Warp+GSC1 = wireguard, section-name=GetSomeCats, test-url=http://cp.cloudflare.c
 Proxy = select, WARP,WARP1,Warp_,Warp_1,Warp+GSC,Warp+GSC1,香港节点, 美国节点, 新加坡节点, 日本节点, 台湾节点, 手动选择
 GlobalMedia = select, 香港节点, 美国节点, 新加坡节点, 日本节点, 台湾节点
 # > 外部节点
-香港节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇭🇰)|(港)|(Hong)|(HK)
-台湾节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇨🇳)|(台)|(Tai)|(TW)
-美国节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇺🇸)|(美)|(States)|(US)
-日本节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇯🇵)|(日)|(Japan)|(JP)
-新加坡节点 = fallback, policy-path=订阅地址, update-interval=0, policy-regex-filter=(🇸🇬)|(新)|(Singapore)|(SG)
-手动选择 = select, policy-path=订阅地址, update-interval=0, no-alert=0, hidden=0, include-all-proxies=0
+香港节点 = fallback, update-interval=0, policy-regex-filter=(🇭🇰)|(港)|(Hong)|(HK), no-alert=0, hidden=0, include-all-proxies=0, include-other-group=魔法学院
+台湾节点 = fallback, update-interval=0, policy-regex-filter=(🇨🇳)|(台)|(Tai)|(TW), no-alert=0, hidden=0, include-all-proxies=0, include-other-group=魔法学院
+美国节点 = fallback, update-interval=0, policy-regex-filter=(🇺🇸)|(美)|(States)|(US), no-alert=0, hidden=0, include-all-proxies=0, include-other-group=魔法学院
+日本节点 = fallback, update-interval=0, policy-regex-filter=(🇯🇵)|(日)|(Japan)|(JP), no-alert=0, hidden=0, include-all-proxies=0, include-other-group=魔法学院
+新加坡节点 = fallback, update-interval=0, policy-regex-filter=(🇸🇬)|(新)|(Singapore)|(SG), no-alert=0, hidden=0, include-all-proxies=0, include-other-group=魔法学院
+手动选择 = select, update-interval=0, no-alert=0, hidden=0, include-all-proxies=1, include-other-group=魔法学院
+魔法学院 = select, policy-path=https://xn--dqrs61a.xn--nyq8xnau43mp3cg06appat33dzol.xn--fiqs8s/link/vGjrFha0OYiUciTTd39g?surge=1&lang=zh, update-interval=0, no-alert=0, hidden=0, include-all-proxies=0
 
 [Rule]
 # > 苹果服务
